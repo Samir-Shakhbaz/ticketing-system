@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticketing System</title>
+</head>
+<body>
+
+<div th:replace="~{fragments :: navigation}"></div>
+
+<header>
+    <h1>Welcome to the Ticketing System</h1>
+</header>
+<main>
+    <nav>
+        <ul>
+            <li><a th:href="@{/tickets}">View Tickets</a></li>
+            <li><a th:href="@{/tickets/create}">Create Ticket</a></li>
+            <li><a th:href="@{/users}">View Users</a></li>
+            <li><a th:href="@{/users/create}">Create User</a></li>
+            <li><a th:href="@{/notifications-page}">Notifications</a></li>
+            <li><a th:href="@{/login}">Login</a></li>
+        </ul>
+    </nav>
+</main>
+<footer>
+    <p>&copy; 2024 Ticketing System</p>
+</footer>
+</body>
+</html>

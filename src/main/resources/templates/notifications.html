@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Notifications</title>
+    <style>
+
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments :: navigation}"></div>
+
+<h1>Notifications</h1>
+<div th:if="${notifications.isEmpty()}">No notifications</div>
+<div th:each="notification : ${notifications}"
+     th:class="${notification.isRead ? 'notification read' : 'notification'}">
+    <p th:text="${notification.message}"></p>
+    <span th:if="${!notification.isRead}"
+          th:onclick="'markAsRead(' + ${notification.id} + ');'"
+          class="mark-read">Mark as Read</span>
+</div>
+
+<script>
+    async function markAsRead(id) {
+        await fetch(`/notifications/${id}/read`, { method: 'PATCH' });
+        // Reload the page or update the UI to reflect changes
+        location.reload();
+    }
+</script>
+</body>
+</html>

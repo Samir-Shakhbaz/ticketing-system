@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Users</title>
+</head>
+<body>
+<div th:replace="~{fragments :: navigation}"></div>
+
+<header>
+  <h1>Users</h1>
+  <nav>
+    <a th:href="@{/tickets}">View Tickets</a>
+    <a th:href="@{/users/create}">Create User</a>
+  </nav>
+</header>
+<main>
+  <h2>User List</h2>
+  <table>
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Username</th>
+      <th>Role</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+      <td th:text="${user.id}"></td>
+      <td th:text="${user.username}"></td>
+      <td th:text="${user.role}"></td>
+      <td>
+        <!-- Form for deleting the user -->
+        <form th:action="@{/users/delete/{id}(id=${user.id})}" method="post" style="display:inline;">
+          <input type="hidden" name="_method" value="delete">
+          <button type="submit">Delete</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <!-- Show a message if there are no users -->
+  <p th:if="${#lists.isEmpty(users)}">No users available.</p>
+</main>
+<footer>
+  <p>&copy; 2024 Ticketing System</p>
+</footer>
+</body>
+</html>
+

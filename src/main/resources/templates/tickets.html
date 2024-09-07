@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tickets</title>
+</head>
+<body>
+<div th:replace="~{fragments :: navigation}"></div>
+
+<header>
+    <h1>Tickets</h1>
+    <nav>
+        <a th:href="@{/tickets/create}">Create Ticket</a>
+        <a th:href="@{/users}">View Users</a>
+    </nav>
+</header>
+<main>
+    <h2>Ticket List</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Subject</th>
+            <th>Description</th>
+            <th>User ID</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="ticket : ${tickets}">
+            <td th:text="${ticket.id}"></td>
+            <td th:text="${ticket.subject}"></td>
+            <td th:text="${ticket.description}"></td>
+            <td th:text="${ticket.user != null ? ticket.user.id : 'No User'}"></td>
+            <td>
+                <a th:href="@{|/tickets/${ticket.id}|}">Update</a>
+                <a th:href="@{|/tickets/delete/${ticket.id}|}" th:onclick="return confirm('Are you sure?');">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <!-- Show a message if there are no tickets -->
+    <p th:if="${#lists.isEmpty(tickets)}">No tickets available.</p>
+</main>
+<footer>
+    <p>&copy; 2024 Ticketing System</p>
+</footer>
+</body>
+</html>
