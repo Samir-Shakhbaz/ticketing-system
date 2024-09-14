@@ -5,17 +5,18 @@ import com.sash.ticketing_system.models.User;
 import com.sash.ticketing_system.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     @Autowired
     UserRepository userRepository;
@@ -30,8 +31,7 @@ public class UserService {
             }
 
             public User findByUserId(Long id) {
-                return userRepository.findById(id)
-                        .orElseThrow(() -> new UserNotFoundException("User not found with id " + id));
+                return userRepository.findById(id).orElse(null);
             }
 
 
@@ -59,16 +59,16 @@ public class UserService {
                 userRepository.deleteById(id);
             }
 
-    public UserDetails findByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found");
-        }
-        return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority(user.getRole()))
-        );
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByUsername(username);
+    }
+
+    public User findById(Long assigneeId) {return userRepository.findById(assigneeId).orElse(null);
     }
 }
 

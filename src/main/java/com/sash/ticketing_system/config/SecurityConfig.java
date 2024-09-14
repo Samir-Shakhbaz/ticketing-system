@@ -1,5 +1,6 @@
 package com.sash.ticketing_system.config;
 
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,7 +17,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
+@AllArgsConstructor
 public class SecurityConfig {
 
     @Bean
@@ -28,11 +30,13 @@ public class SecurityConfig {
                 // Configuring endpoint access
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/", "/login", "/register").permitAll()
+                        .requestMatchers("/tickets/**").hasRole("USER")
+                        .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated()
                 )
 
                 .formLogin(form -> form
-                        .defaultSuccessUrl("/users", true)
+                        .defaultSuccessUrl("/tickets", true)
                         .failureUrl("/login?error=true")
                         .permitAll()
                 )
@@ -43,16 +47,16 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password(passwordEncoder().encode("admin"))
-                .roles("ADMIN")
-                .build();
-
-        return new InMemoryUserDetailsManager(admin);
-    }
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        UserDetails admin = User.builder()
+//                .username("admin")
+//                .password(passwordEncoder().encode("admin"))
+//                .roles("ADMIN")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(admin);
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

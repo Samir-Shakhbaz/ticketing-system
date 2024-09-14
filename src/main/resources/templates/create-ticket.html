@@ -17,6 +17,8 @@
 </header>
 <main>
   <form th:action="@{/tickets/create}" th:object="${ticket}" method="post">
+<!--    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+
     <label for="subject">Subject:</label>
     <input type="text" id="subject" th:field="*{subject}" required>
 
@@ -25,6 +27,7 @@
 
     <button type="submit">Create Ticket</button>
   </form>
+
 </main>
 
 <footer>

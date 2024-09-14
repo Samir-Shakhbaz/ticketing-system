@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TicketService {
@@ -23,15 +24,15 @@ public class TicketService {
    @Autowired
    NotificationService notificationService;
 
-    public void createTicket(Ticket ticket) {
-        User user = userService.findByUserId(ticket.getUser().getId());
-        ticket.setUser(user);
-        ticketRepository.save(ticket);
-    }
+   public void createTicket(Ticket ticket) {
+       System.out.println("Saving ticket: " + ticket);
 
+       ticketRepository.save(ticket);
+
+       System.out.println("Ticket saved successfully: " + ticket);
+   }
 
     public List<Ticket> getTicketsByUser(User user) {
-        // Ensure that the repository has a method to find tickets by user
         return ticketRepository.findByUser(user);
     }
 
@@ -70,4 +71,9 @@ public class TicketService {
         ticketRepository.deleteByUserId(userId);
     }
 
-}
+    public Ticket findTicketById(Long ticketId) {
+        return ticketRepository.findById(ticketId).orElse(null);  // unwrap Optional, return null if not found
+    }
+
+    public void saveTicket(Ticket ticket) { ticketRepository.save(ticket);}
+    }

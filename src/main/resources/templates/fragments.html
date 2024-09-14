@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +11,14 @@
 <div th:fragment="navigation">
     <nav>
         <a href="/">Go to Index</a>
+
+        <!-- Notifications Link -->
+        <div class="notification-link">
+            <a th:href="@{/notifications}" title="View Notifications">
+                View Notifications
+                <span th:if="${notificationsCount > 0}" th:text="'(' + ${notificationsCount} + ')'"></span>
+            </a>
+        </div>
     </nav>
 </div>
 

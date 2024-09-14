@@ -36,4 +36,9 @@ public class Ticket {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
+
+    @ManyToOne
+    @JoinColumn(name = "assignee_id")
+    private User assignee;  // the user to whom the ticket is assigned
+
 }

@@ -6,6 +6,8 @@
     <title>Tickets</title>
 </head>
 <body>
+
+<!-- Navigation Bar (Fragment) -->
 <div th:replace="~{fragments :: navigation}"></div>
 
 <header>
@@ -15,6 +17,7 @@
         <a th:href="@{/users}">View Users</a>
     </nav>
 </header>
+
 <main>
     <h2>Ticket List</h2>
     <table>
@@ -22,8 +25,7 @@
         <tr>
             <th>ID</th>
             <th>Subject</th>
-            <th>Description</th>
-            <th>User ID</th>
+            <th>Assignee</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -31,20 +33,28 @@
         <tr th:each="ticket : ${tickets}">
             <td th:text="${ticket.id}"></td>
             <td th:text="${ticket.subject}"></td>
-            <td th:text="${ticket.description}"></td>
-            <td th:text="${ticket.user != null ? ticket.user.id : 'No User'}"></td>
+            <td th:text="${ticket.assignee != null ? ticket.assignee.username : 'Unassigned'}"></td>
             <td>
-                <a th:href="@{|/tickets/${ticket.id}|}">Update</a>
-                <a th:href="@{|/tickets/delete/${ticket.id}|}" th:onclick="return confirm('Are you sure?');">Delete</a>
+                <!-- Assign Ticket Dropdown -->
+                <form th:action="@{/tickets/assign/{ticketId}(ticketId=${ticket.id})}" method="post">
+                    <select name="assigneeId" required>
+                        <option value="" disabled selected>Select Assignee</option>
+                        <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"></option>
+                    </select>
+                    <button type="submit">Assign</button>
+                </form>
             </td>
         </tr>
         </tbody>
     </table>
+
     <!-- Show a message if there are no tickets -->
     <p th:if="${#lists.isEmpty(tickets)}">No tickets available.</p>
 </main>
+
 <footer>
     <p>&copy; 2024 Ticketing System</p>
 </footer>
+
 </body>
 </html>

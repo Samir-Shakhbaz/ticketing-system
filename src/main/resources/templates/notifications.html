@@ -23,7 +23,6 @@
 <script>
     async function markAsRead(id) {
         await fetch(`/notifications/${id}/read`, { method: 'PATCH' });
-        // Reload the page or update the UI to reflect changes
         location.reload();
     }
 </script>
