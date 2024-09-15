@@ -25,6 +25,15 @@
     <label for="description">Description:</label>
     <textarea id="description" th:field="*{description}" required></textarea>
 
+      <!-- Priority dropdown -->
+    <label for="priority">Priority:</label>
+    <select id="priority" th:field="*{priority}">
+       <option th:value="LOW">Low</option>
+       <option th:value="MEDIUM">Medium</option>
+       <option th:value="HIGH">High</option>
+       <option th:value="URGENT">Urgent</option>
+    </select>
+
     <button type="submit">Create Ticket</button>
   </form>
 

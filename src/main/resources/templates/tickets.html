@@ -4,6 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tickets</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        th:nth-child(1), td:nth-child(1) {
+            width: 5%;
+        }
+        th:nth-child(2), td:nth-child(2) {
+            width: 20%;
+        }
+        th:nth-child(3), td:nth-child(3) {
+            width: 25%;
+        }
+        th:nth-child(4), td:nth-child(4) {
+            width: 10%;
+        }
+        th:nth-child(5), td:nth-child(5) {
+            width: 10%;
+        }
+        th:nth-child(6), td:nth-child(6) {
+            width: 15%;
+        }
+        th:nth-child(7), td:nth-child(7) {
+            width: 15%;
+        }
+        /* Align priority dropdown and update button horizontally */
+        .inline-form {
+            display: flex;
+            align-items: center;
+        }
+        .inline-form select, .inline-form button {
+            margin-right: 10px;
+        }
+    </style>
 </head>
 <body>
 
@@ -25,6 +68,9 @@
         <tr>
             <th>ID</th>
             <th>Subject</th>
+            <th>Description</th>
+            <th>Current Priority</th>
+            <th>Update Priority</th>
             <th>Assignee</th>
             <th>Actions</th>
         </tr>
@@ -33,10 +79,31 @@
         <tr th:each="ticket : ${tickets}">
             <td th:text="${ticket.id}"></td>
             <td th:text="${ticket.subject}"></td>
-            <td th:text="${ticket.assignee != null ? ticket.assignee.username : 'Unassigned'}"></td>
+            <td th:text="${ticket.description}"></td>
+            <td th:text="${ticket.priority}"></td>
+
             <td>
-                <!-- Assign Ticket Dropdown -->
+                <form class="inline-form" th:action="@{/tickets/update/{id}(id=${ticket.id})}" th:object="${ticket}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <input type="hidden" th:field="*{subject}" />
+
+                    <select th:field="*{priority}">
+                        <option th:value="LOW" th:selected="${ticket.priority == 'LOW'}">Low</option>
+                        <option th:value="MEDIUM" th:selected="${ticket.priority == 'MEDIUM'}">Medium</option>
+                        <option th:value="HIGH" th:selected="${ticket.priority == 'HIGH'}">High</option>
+                        <option th:value="URGENT" th:selected="${ticket.priority == 'URGENT'}">Urgent</option>
+                    </select>
+
+                    <button type="submit">Update</button>
+                </form>
+            </td>
+
+            <td th:text="${ticket.assignee != null ? ticket.assignee.username : 'Unassigned'}"></td>
+
+            <td>
                 <form th:action="@{/tickets/assign/{ticketId}(ticketId=${ticket.id})}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
                     <select name="assigneeId" required>
                         <option value="" disabled selected>Select Assignee</option>
                         <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"></option>
@@ -48,7 +115,6 @@
         </tbody>
     </table>
 
-    <!-- Show a message if there are no tickets -->
     <p th:if="${#lists.isEmpty(tickets)}">No tickets available.</p>
 </main>
 

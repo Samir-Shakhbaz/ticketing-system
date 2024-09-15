@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .cors(withDefaults())
                 // Configuring endpoint access
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/login", "/register").permitAll()
+                        .requestMatchers("/", "/login", "users", "/users/create").permitAll()
                         .requestMatchers("/tickets/**").hasRole("USER")
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated()

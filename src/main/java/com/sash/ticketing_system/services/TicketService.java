@@ -36,11 +36,13 @@ public class TicketService {
         return ticketRepository.findByUser(user);
     }
 
-    // Example of additional methods
     @Transactional
     public Ticket updateTicket(Long id, Ticket updatedTicket, Long userId) {
         Ticket updated = ticketRepository.findById(id)
                 .map(ticket -> {
+
+                    System.out.println("Updating ticket: subject=" + updatedTicket.getSubject());
+
                     ticket.setSubject(updatedTicket.getSubject());
                     ticket.setDescription(updatedTicket.getDescription());
                     ticket.setStatus(updatedTicket.getStatus());
@@ -49,7 +51,7 @@ public class TicketService {
                 })
                 .orElseThrow(() -> new TicketNotFoundException("Ticket not found with id " + id));
 
-        // Create a notification
+
         Notification notification = new Notification();
         notification.setUserId(userId);
         notification.setMessage("Your ticket with ID " + id + " has been updated.");

@@ -6,13 +6,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 public class LoginController {
 
-    // Show login page
     @GetMapping("/login")
     public String showLoginPage() {
         return "login";
     }
 
-    // Handle login post request
     @PostMapping("/login")
     public String handleLogin(@RequestParam String username, @RequestParam String password) {
         return "redirect:/";

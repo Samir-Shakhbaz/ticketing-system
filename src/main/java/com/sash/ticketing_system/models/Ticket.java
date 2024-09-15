@@ -2,7 +2,6 @@ package com.sash.ticketing_system.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,7 +14,9 @@ public class Ticket {
     private String subject;
     private String description;
     private String status;
-    private String priority;
+
+    @Enumerated(EnumType.STRING)
+    private Priority priority = Priority.LOW;  // Default priority is LOW
 
     @Column(updatable = false)
     private LocalDateTime createdAt;
@@ -24,8 +25,17 @@ public class Ticket {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private User user;  // user who created the ticket
 
+    @ManyToOne
+    @JoinColumn(name = "assignee_id")
+    private User assignee;  // user to whom the ticket is assigned
+
+    public enum Priority {
+        LOW, MEDIUM, HIGH, URGENT
+    }
+
+    // automatically set creation and update timestamps
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -36,9 +46,5 @@ public class Ticket {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
-
-    @ManyToOne
-    @JoinColumn(name = "assignee_id")
-    private User assignee;  // the user to whom the ticket is assigned
-
 }
+

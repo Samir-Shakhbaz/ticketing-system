@@ -41,7 +41,9 @@ public class TicketController {
     public String viewTickets(Model model) {
         List<Ticket> tickets = ticketService.getAllTickets();
         List<User> users = userService.findAllUsers();
+        Ticket ticket = new Ticket();
         model.addAttribute("tickets", tickets);
+        model.addAttribute("ticket", ticket);
         model.addAttribute("users", users);
         return "tickets";
     }
@@ -79,28 +81,23 @@ public class TicketController {
 
     @PostMapping("/assign/{ticketId}")
     public String assignTicket(@PathVariable Long ticketId, @RequestParam Long assigneeId) {
-        // Find the ticket by ID
         Ticket ticket = ticketService.findTicketById(ticketId);
         if (ticket == null) {
             return "redirect:/tickets";
         }
 
-        // Find the user to whom the ticket should be assigned
         User assignee = userService.findById(assigneeId);
         if (assignee == null) {
             return "redirect:/tickets";
         }
 
-        // Assign the ticket
         ticket.setAssignee(assignee);
-        ticketService.saveTicket(ticket);  // Save the updated ticket
+        ticketService.saveTicket(ticket);
 
         notificationService.createNotification(assignee.getId(), "You have been assigned a new ticket: " + ticket.getSubject());
 
         return "redirect:/tickets";
     }
-
-
 
 //    @PostMapping
 //    public String createTicket(@ModelAttribute Ticket ticket) {
@@ -124,6 +121,33 @@ public class TicketController {
         }
         return "redirect:/notifications";
     }
+
+    @GetMapping("/update/{id}")
+    public String showUpdateTicketForm(@PathVariable Long id, Model model) {
+        Ticket ticket = ticketService.findTicketById(id);
+        model.addAttribute("ticket", ticket);
+        return "update-ticket";
+    }
+
+    @PostMapping("/update/{id}")
+    public String updateTicket(@PathVariable Long id, @ModelAttribute Ticket ticketDetails, Principal principal) {
+
+        Ticket existingTicket = ticketService.findTicketById(id);
+
+        existingTicket.setSubject(existingTicket.getSubject());
+        existingTicket.setDescription(existingTicket.getDescription());
+        existingTicket.setPriority(ticketDetails.getPriority());
+        existingTicket.setStatus(ticketDetails.getStatus());
+
+
+        String username = principal.getName();
+        User user = userService.findByUsername(username);
+
+        ticketService.updateTicket(id, existingTicket, user.getId());
+
+        return "redirect:/tickets";
+    }
+
 
 
 }
