@@ -4,20 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Users</title>
+  <div th:replace="~{fragments :: styles}"></div> <!-- Includes CSS styles -->
 </head>
 <body>
-<div th:replace="~{fragments :: navigation}"></div>
+<div th:replace="~{fragments :: navigation}"></div> <!-- Includes navbar -->
 
 <header>
   <h1>Users</h1>
-  <nav>
-    <a th:href="@{/tickets}">View Tickets</a>
-    <a th:href="@{/users/create}">Create User</a>
-  </nav>
 </header>
+
 <main>
   <h2>User List</h2>
-  <table>
+  <table class="table table-striped">
     <thead>
     <tr>
       <th>ID</th>
@@ -32,21 +30,26 @@
       <td th:text="${user.username}"></td>
       <td th:text="${user.role}"></td>
       <td>
-        <!-- Form for deleting the user -->
+        <!-- Delete User Form -->
         <form th:action="@{/users/delete/{id}(id=${user.id})}" method="post" style="display:inline;">
           <input type="hidden" name="_method" value="delete">
-          <button type="submit">Delete</button>
+          <button class="btn btn-danger" type="submit">Delete</button>
         </form>
       </td>
     </tr>
     </tbody>
   </table>
-  <!-- Show a message if there are no users -->
+
+  <!-- Message if no users are found -->
   <p th:if="${#lists.isEmpty(users)}">No users available.</p>
 </main>
+
 <footer>
   <p>&copy; 2024 Ticketing System</p>
 </footer>
+
+<div th:replace="~{fragments :: scripts}"></div>
 </body>
 </html>
+
 

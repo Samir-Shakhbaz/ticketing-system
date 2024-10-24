@@ -3,22 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <title>Notifications</title>
-    <style>
 
-    </style>
+    <div th:replace="~{fragments :: styles}"></div> <!-- Includes CSS styles -->
 </head>
 <body>
-<div th:replace="~{fragments :: navigation}"></div>
+<div th:replace="~{fragments :: navigation}"></div> <!-- Includes navbar -->
 
 <h1>Notifications</h1>
-<div th:if="${notifications.isEmpty()}">No notifications</div>
-<div th:each="notification : ${notifications}"
-     th:class="${notification.isRead ? 'notification read' : 'notification'}">
-    <p th:text="${notification.message}"></p>
-    <span th:if="${!notification.isRead}"
-          th:onclick="'markAsRead(' + ${notification.id} + ');'"
-          class="mark-read">Mark as Read</span>
-</div>
+
+<!-- Table for notifications -->
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Message</th>
+        <th>Received At</th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Iterate over notifications -->
+    <tr th:each="notification : ${notifications}">
+        <td th:text="${notification.message}"></td>
+        <td th:text="${#temporals.format(notification.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+        <td th:text="${notification.isRead ? 'Read' : 'Unread'}"></td> <!-- Display read/unread status -->
+        <td>
+            <!-- Mark as Read button if notification is unread -->
+            <button th:if="${!notification.isRead}"
+                    th:onclick="'markAsRead(' + ${notification.id} + ');'"
+                    class="btn btn-primary">
+                Mark as Read
+            </button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Message if there are no notifications -->
+<div th:if="${#lists.isEmpty(notifications)}">No notifications</div>
 
 <script>
     async function markAsRead(id) {
@@ -26,5 +48,7 @@
         location.reload();
     }
 </script>
+
+<div th:replace="~{fragments :: scripts}"></div> <!-- Includes JavaScript -->
 </body>
 </html>

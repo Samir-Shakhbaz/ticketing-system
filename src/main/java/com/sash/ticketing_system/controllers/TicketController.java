@@ -1,5 +1,6 @@
 package com.sash.ticketing_system.controllers;
 
+import com.sash.ticketing_system.config.TicketNotFoundException;
 import com.sash.ticketing_system.models.Notification;
 import com.sash.ticketing_system.models.Ticket;
 import com.sash.ticketing_system.models.User;
@@ -9,9 +10,11 @@ import com.sash.ticketing_system.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.List;
@@ -47,7 +50,6 @@ public class TicketController {
         model.addAttribute("users", users);
         return "tickets";
     }
-
 
     @GetMapping("/create")
     public String showCreateTicketForm(Model model) {
@@ -145,6 +147,17 @@ public class TicketController {
 
         ticketService.updateTicket(id, existingTicket, user.getId());
 
+        return "redirect:/tickets";
+    }
+
+    @PostMapping("/update-status/{id}")
+    public String updateTicketStatus(@PathVariable Long id, @ModelAttribute Ticket ticket, @AuthenticationPrincipal User user, RedirectAttributes redirectAttributes) {
+        try {
+            ticketService.updateTicket(id, ticket, user.getId());
+            redirectAttributes.addFlashAttribute("message", "Ticket status updated successfully!");
+        } catch (TicketNotFoundException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
         return "redirect:/tickets";
     }
 
